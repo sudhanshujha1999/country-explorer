@@ -186,20 +186,6 @@ export default function LoginPage() {
               Press Enter or click this button to sign in with your credentials
             </p>
           </div>
-
-          <div className="text-center text-sm text-muted bg-accent/5 p-4 rounded-lg">
-            <h2 className="font-medium text-theme mb-3">Demo Credentials</h2>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="font-medium">Username:</span>
-                <span className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">testuser</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="font-medium">Password:</span>
-                <span className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">password123</span>
-              </div>
-            </div>
-          </div>
         </form>
       </div>
     </main>
