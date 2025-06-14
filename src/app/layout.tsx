@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/atom/Header";
-import { getServerSession } from "next-auth";
-import { ThemeProvider } from 'next-themes';
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
+import { NotificationProvider } from '@/components/providers/NotificationProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,18 +25,18 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession();
-
   return (
-    <ThemeProvider attribute="class" defaultTheme="light">
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <Header />
-          {children}
-        </body>
-      </html>
-    </ThemeProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <NotificationProvider >
+            <Header />
+            {children}
+          </NotificationProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }
