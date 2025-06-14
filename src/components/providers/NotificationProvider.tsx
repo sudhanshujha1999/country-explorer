@@ -11,7 +11,18 @@ function NotificationListener() {
 
   useEffect(() => {
     const handleNotification = (event: CustomEvent) => {
+      // Handle malformed events gracefully
+      if (!event.detail || typeof event.detail !== 'object') {
+        return;
+      }
+      
       const { message, variant } = event.detail;
+      
+      // Ensure message and variant are provided
+      if (!message || !variant) {
+        return;
+      }
+      
       const now = Date.now();
       
       // Prevent duplicate notifications within 500ms

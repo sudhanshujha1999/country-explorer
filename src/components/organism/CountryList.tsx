@@ -10,9 +10,10 @@ import { Country } from '@/types';
 
 interface CountryListProps {
   countries: Country[];
+  onUnauthenticatedClick?: () => void;
 }
 
-const CountryList: React.FC<CountryListProps> = ({ countries }) => {
+const CountryList: React.FC<CountryListProps> = ({ countries, onUnauthenticatedClick }) => {
   const { favorites, toggleFavorite } = useFavoriteStore();
   const { isAuthenticated } = useAuthStore();
 
@@ -26,6 +27,13 @@ const CountryList: React.FC<CountryListProps> = ({ countries }) => {
 
   const CountryRow = ({ country }: { country: Country }) => {
     const isFavorite = favorites.includes(country.cca2);
+    
+    const handleUnauthenticatedClick = (e: React.MouseEvent | React.KeyboardEvent) => {
+      e.preventDefault();
+      if (onUnauthenticatedClick) {
+        onUnauthenticatedClick();
+      }
+    };
     
     const content = (
       <div className="grid grid-cols-1 sm:grid-cols-6 gap-4 p-4 hover:bg-accent/10 transition-colors focus-within:bg-accent/10">
@@ -116,14 +124,14 @@ const CountryList: React.FC<CountryListProps> = ({ countries }) => {
           </div>
 
           {/* Name */}
-          <div className="text-theme">
+          <div className="text-theme flex items-center">
             <div className="truncate" title={country.name.common}>
               {country.name.common}
             </div>
           </div>
 
           {/* Population */}
-          <div className="text-theme">
+          <div className="text-theme flex items-center">
             <div 
               className="truncate" 
               title={`Population: ${country.population.toLocaleString()}`}
@@ -134,7 +142,7 @@ const CountryList: React.FC<CountryListProps> = ({ countries }) => {
           </div>
 
           {/* Region - Hidden on small tablets */}
-          <div className="hidden md:block text-theme">
+          <div className="hidden md:flex text-theme  items-center">
             <div 
               className="truncate" 
               title={`Region: ${country.region}`}
@@ -145,7 +153,7 @@ const CountryList: React.FC<CountryListProps> = ({ countries }) => {
           </div>
 
           {/* Capital - Hidden on tablets */}
-          <div className="hidden lg:block text-theme">
+          <div className="hidden lg:flex text-theme  items-center">
             <div 
               className="truncate" 
               title={`Capital: ${country.capital?.[0] || 'N/A'}`}
@@ -200,9 +208,17 @@ const CountryList: React.FC<CountryListProps> = ({ countries }) => {
     return (
       <div 
         key={country.cca2} 
-        className="border-b border-theme"
-        role="row"
-        aria-label={`${country.name.common} - Population: ${country.population.toLocaleString()}, Region: ${country.region}, Capital: ${country.capital?.[0] || 'N/A'}`}
+        className="border-b border-theme cursor-pointer hover:bg-accent/5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-colors"
+        role="button"
+        tabIndex={0}
+        onClick={handleUnauthenticatedClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            handleUnauthenticatedClick(e);
+          }
+        }}
+        aria-label={`Sign in to view details for ${country.name.common}`}
+        title="Sign in to view country details"
       >
         {content}
       </div>

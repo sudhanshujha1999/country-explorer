@@ -47,6 +47,16 @@ export default function CountryListClient({ countries }: CountryListClientProps)
     });
   }, [countries, searchTerm, selectedRegion]);
 
+  const handleUnauthenticatedClick = () => {
+    enqueueSnackbar(
+      'Sign in to check country details',
+      { 
+        variant: 'info',
+        autoHideDuration: 4000,
+      }
+    );
+  };
+
   // Show error state if no countries loaded
   if (countries.length === 0) {
     return (
@@ -54,7 +64,7 @@ export default function CountryListClient({ countries }: CountryListClientProps)
         <div className="text-6xl mb-4" role="img" aria-label="Error emoji">⚠️</div>
         <h2 className="text-xl font-semibold text-theme mb-2">Unable to Load Countries</h2>
         <p className="text-muted mb-6 max-w-md mx-auto">
-          We're having trouble loading the countries data. Please check your internet connection and try again.
+          We&apos;re having trouble loading the countries data. Please check your internet connection and try again.
         </p>
         <button 
           onClick={() => window.location.reload()}
@@ -74,7 +84,10 @@ export default function CountryListClient({ countries }: CountryListClientProps)
         onSearchChange={setSearchTerm}
         onRegionChange={setSelectedRegion}
       />
-      <CountryList countries={filteredCountries} />
+      <CountryList 
+        countries={filteredCountries} 
+        onUnauthenticatedClick={handleUnauthenticatedClick}
+      />
     </>
   );
 } 
