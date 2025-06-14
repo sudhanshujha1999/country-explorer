@@ -2,11 +2,10 @@ import { Suspense } from 'react';
 import { Country } from '@/types';
 import CountryListClient from '@/components/organism/CountryListClient';
 
-// Server-side data fetching
 async function getCountries(): Promise<Country[]> {
   try {
     const response = await fetch('https://restcountries.com/v3.1/all?fields=name,population,region,capital,flags,cca2', {
-      next: { revalidate: 3600 } // Revalidate every hour
+      next: { revalidate: 3600 }
     });
     
     if (!response.ok) {
@@ -22,7 +21,6 @@ async function getCountries(): Promise<Country[]> {
     return data;
   } catch (error) {
     console.error('Error fetching countries:', error);
-    // Return empty array on error - the client component can handle error display
     return [];
   }
 }

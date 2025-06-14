@@ -1,4 +1,3 @@
-// components/Header.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -27,9 +26,7 @@ const Header = () => {
   return (
     <header className="bg-theme shadow-theme px-4 py-3 sticky top-0 z-50" role="banner">
       <div className="container mx-auto flex items-center justify-between">
-        {/* Left side: Logo and Desktop Navigation */}
         <div className="flex items-center space-x-8">
-          {/* Logo or Title */}
           <Link 
             href="/" 
             className="text-xl font-semibold text-theme"
@@ -39,7 +36,6 @@ const Header = () => {
             GlobeTrekker
           </Link>
 
-          {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center space-x-6" role="navigation" aria-label="Main navigation">
             <Link 
               href="/" 
@@ -62,9 +58,7 @@ const Header = () => {
           </nav>
         </div>
 
-        {/* Right side: Theme toggle, user actions, and mobile menu button */}
         <div className="flex items-center gap-2">
-          {/* Theme Toggle */}
           {mounted && (
             <button 
               className="flex cursor-pointer items-center gap-2 px-2 sm:px-3 py-2 border border-theme rounded-md hover:bg-accent/10 hover:border-accent transition-all duration-200 text-sm font-medium text-theme hover:text-accent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" 
@@ -79,7 +73,6 @@ const Header = () => {
             </button>
           )}
           
-          {/* Desktop Auth Actions */}
           <div className="hidden md:flex items-center gap-2">
             {isAuthenticated ? (
               <>
@@ -107,7 +100,6 @@ const Header = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             className="md:hidden p-2 rounded-md text-theme hover:text-accent hover:bg-accent/10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -124,7 +116,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div 
           id="mobile-menu"
@@ -133,7 +124,6 @@ const Header = () => {
           aria-label="Mobile navigation"
         >
           <div className="px-4 py-3 space-y-3">
-            {/* Mobile Navigation Links */}
             <Link 
               href="/" 
               className="block text-theme hover:text-accent transition-colors py-2 px-3 rounded-md hover:bg-accent/10 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
@@ -153,7 +143,6 @@ const Header = () => {
               </Link>
             )}
             
-            {/* Mobile Auth Actions */}
             <div className="border-t border-theme pt-3 mt-3">
               {isAuthenticated ? (
                 <div className="space-y-2">

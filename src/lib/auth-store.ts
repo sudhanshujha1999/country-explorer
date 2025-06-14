@@ -13,7 +13,6 @@ interface AuthState {
     logout: () => void;
 }
 
-// Mock credentials
 const MOCK_CREDENTIALS = {
     username: 'testuser',
     password: 'password123'
@@ -26,14 +25,12 @@ const useAuthStore = create<AuthState>()(
             isAuthenticated: false,
 
             login: async (username: string, password: string) => {
-                // Simulate API call delay
                 await new Promise(resolve => setTimeout(resolve, 500));
 
                 if (username === MOCK_CREDENTIALS.username && password === MOCK_CREDENTIALS.password) {
                     const user = { username, email: 'testuser@example.com' };
                     set({ user, isAuthenticated: true });
 
-                    // Show success notification using notistack
                     if (typeof window !== 'undefined') {
                         const event = new CustomEvent('show-notification', {
                             detail: {
@@ -54,7 +51,6 @@ const useAuthStore = create<AuthState>()(
                 const currentUser = get().user;
                 set({ user: null, isAuthenticated: false });
 
-                // Show info notification using notistack
                 if (typeof window !== 'undefined') {
                     const event = new CustomEvent('show-notification', {
                         detail: {

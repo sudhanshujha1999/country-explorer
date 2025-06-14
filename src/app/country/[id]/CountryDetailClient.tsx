@@ -58,7 +58,6 @@ export default function CountryDetailClient({ countryData, borderCountries }: Co
 
   return (
     <main className="relative">
-      {/* Absolute positioned back button - overlays the card */}
       <button 
         onClick={() => router.back()}
         className="absolute cursor-pointer top-4 left-4 z-10 p-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
@@ -70,7 +69,6 @@ export default function CountryDetailClient({ countryData, borderCountries }: Co
 
       <div className="container mx-auto px-0 md:px-4 md:py-16">
         <article className="bg-white dark:bg-gray-800 shadow-lg sm:rounded-lg overflow-hidden relative">
-          {/* Favorite button - absolute positioned on top right */}
           {isAuthenticated && (
             <button 
               onClick={handleFavoriteToggle}
@@ -92,9 +90,7 @@ export default function CountryDetailClient({ countryData, borderCountries }: Co
             </button>
           )}
 
-          {/* Responsive Layout - Mobile: vertical, Desktop: horizontal */}
           <div className="flex flex-col md:flex-row md:min-h-[600px]">
-            {/* Flag Section */}
             <div className="md:w-2/5 h-48 md:h-auto bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center p-4 md:p-8">
               <div className="w-24 h-24 md:w-80 md:h-60 rounded-lg overflow-hidden border-4 border-white shadow-lg md:shadow-2xl">
                 <Image
@@ -108,9 +104,7 @@ export default function CountryDetailClient({ countryData, borderCountries }: Co
               </div>
             </div>
 
-            {/* Details Section */}
             <div className="md:w-3/5 p-4 md:p-8">
-              {/* Country Name */}
               <div className="mb-6 md:mb-8">
                 <h1 className="!text-2xl md:!text-4xl font-bold text-gray-900 dark:text-white mb-4 md:mb-6">
                   {country.name.common}
@@ -127,7 +121,6 @@ export default function CountryDetailClient({ countryData, borderCountries }: Co
                 )}
               </div>
 
-              {/* Basic Information */}
               <section aria-labelledby="basic-info-heading">
                 <h2 id="basic-info-heading" className="sr-only">Basic Information</h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-8">
@@ -183,7 +176,6 @@ export default function CountryDetailClient({ countryData, borderCountries }: Co
                 </div>
               </section>
 
-              {/* Border Countries */}
               {country.borders && country.borders.length > 0 && (
                 <section aria-labelledby="border-countries-heading">
                   <h2 id="border-countries-heading" className="font-semibold text-gray-900 dark:text-white mb-4">

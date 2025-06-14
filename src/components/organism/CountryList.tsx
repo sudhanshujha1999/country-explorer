@@ -37,10 +37,8 @@ const CountryList: React.FC<CountryListProps> = ({ countries, onUnauthenticatedC
     
     const content = (
       <div className="grid grid-cols-1 sm:grid-cols-6 gap-4 p-4 hover:bg-accent/10 transition-colors focus-within:bg-accent/10">
-        {/* Mobile Layout */}
         <div className="sm:hidden">
           <div className="flex items-start gap-4">
-            {/* Flag */}
             <div className="flex-shrink-0">
               <div className="w-12 h-12 rounded-full overflow-hidden border border-theme">
                 <Image
@@ -53,7 +51,6 @@ const CountryList: React.FC<CountryListProps> = ({ countries, onUnauthenticatedC
               </div>
             </div>
             
-            {/* Country Info */}
             <div className="flex-1 min-w-0">
               <h3 className="text-theme font-semibold text-lg mb-1 truncate" title={country.name.common}>
                 {country.name.common}
@@ -80,7 +77,6 @@ const CountryList: React.FC<CountryListProps> = ({ countries, onUnauthenticatedC
               </div>
             </div>
             
-            {/* Favorite Button */}
             <div className="flex-shrink-0">
               <button 
                 onClick={(e) => {
@@ -108,9 +104,7 @@ const CountryList: React.FC<CountryListProps> = ({ countries, onUnauthenticatedC
           </div>
         </div>
 
-        {/* Desktop Layout - Hidden on mobile */}
         <div className="hidden sm:contents">
-          {/* Flag */}
           <div className="flex justify-center">
             <div className="w-10 h-10 rounded-full overflow-hidden border border-theme">
               <Image
@@ -123,14 +117,12 @@ const CountryList: React.FC<CountryListProps> = ({ countries, onUnauthenticatedC
             </div>
           </div>
 
-          {/* Name */}
           <div className="text-theme flex items-center">
             <div className="truncate" title={country.name.common}>
               {country.name.common}
             </div>
           </div>
 
-          {/* Population */}
           <div className="text-theme flex items-center">
             <div 
               className="truncate" 
@@ -141,8 +133,7 @@ const CountryList: React.FC<CountryListProps> = ({ countries, onUnauthenticatedC
             </div>
           </div>
 
-          {/* Region - Hidden on small tablets */}
-          <div className="hidden md:flex text-theme  items-center">
+          <div className="hidden md:flex text-theme items-center">
             <div 
               className="truncate" 
               title={`Region: ${country.region}`}
@@ -152,8 +143,7 @@ const CountryList: React.FC<CountryListProps> = ({ countries, onUnauthenticatedC
             </div>
           </div>
 
-          {/* Capital - Hidden on tablets */}
-          <div className="hidden lg:flex text-theme  items-center">
+          <div className="hidden lg:flex text-theme items-center">
             <div 
               className="truncate" 
               title={`Capital: ${country.capital?.[0] || 'N/A'}`}
@@ -163,7 +153,6 @@ const CountryList: React.FC<CountryListProps> = ({ countries, onUnauthenticatedC
             </div>
           </div>
 
-          {/* Favorite */}
           <div className="flex justify-center">
             <button 
               onClick={(e) => {
@@ -228,7 +217,6 @@ const CountryList: React.FC<CountryListProps> = ({ countries, onUnauthenticatedC
   return (
     <section aria-label="Countries list" className="px-4 sm:px-0">
       <div className="bg-theme border border-theme rounded-lg overflow-hidden" role="table" aria-label="Countries information table">
-        {/* Header - Only show on desktop */}
         <div 
           className="hidden sm:grid grid-cols-6 gap-4 p-4 border-b border-theme font-medium text-theme bg-accent/5"
           role="row"
@@ -242,7 +230,6 @@ const CountryList: React.FC<CountryListProps> = ({ countries, onUnauthenticatedC
           <div className="text-center" role="columnheader" aria-label="Add to favorites">Favorite</div>
         </div>
 
-        {/* Country Rows */}
         <div className="divide-y divide-theme" role="rowgroup">
           {countries.map((country) => (
             <CountryRow key={country.cca2} country={country} />
@@ -250,7 +237,6 @@ const CountryList: React.FC<CountryListProps> = ({ countries, onUnauthenticatedC
         </div>
       </div>
       
-      {/* Screen reader summary */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         Showing {countries.length} {countries.length === 1 ? 'country' : 'countries'}
       </div>

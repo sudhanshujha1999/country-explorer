@@ -16,7 +16,6 @@ export interface Country {
 }
 
 export interface CountryDetail extends Country {
-    // Additional fields that might be needed for detail view
     area?: number;
     timezones?: string[];
     continents?: string[];

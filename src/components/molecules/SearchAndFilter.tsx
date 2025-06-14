@@ -29,7 +29,6 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
     <section className="mb-6" role="search" aria-label="Search and filter countries">
       <div className="px-4 sm:px-0">
         <div className="flex flex-col sm:flex-row gap-4">
-          {/* Search Input */}
           <div className="relative flex-1">
             <label htmlFor="country-search" className="sr-only">
               Search for a country by name
@@ -53,7 +52,6 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
             </div>
           </div>
 
-          {/* Region Filter */}
           <div className="relative sm:w-64">
             <label htmlFor="region-filter" className="sr-only">
               Filter countries by region

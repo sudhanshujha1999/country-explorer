@@ -11,13 +11,11 @@ const useFavoriteStore = (): FavoritesHook => {
     const [favorites, setFavorites] = useState<string[]>([]);
     const notificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Load favorites from localStorage on mount
     useEffect(() => {
         try {
             const stored = localStorage.getItem(FAVORITES_STORAGE_KEY);
             if (stored) {
                 const parsedData = JSON.parse(stored);
-                // Handle both old Zustand format and new format
                 const favoritesArray = parsedData.state?.favorites || parsedData.favorites || parsedData;
                 if (Array.isArray(favoritesArray)) {
                     setFavorites(favoritesArray);
@@ -29,7 +27,6 @@ const useFavoriteStore = (): FavoritesHook => {
         }
     }, []);
 
-    // Save favorites to localStorage whenever favorites change
     useEffect(() => {
         try {
             localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify({ favorites }));
@@ -45,12 +42,10 @@ const useFavoriteStore = (): FavoritesHook => {
                 ? prevFavorites.filter((id) => id !== cca2)
                 : [...prevFavorites, cca2];
 
-            // Clear any existing notification timeout
             if (notificationTimeoutRef.current) {
                 clearTimeout(notificationTimeoutRef.current);
             }
 
-            // Debounce notification to prevent duplicates
             notificationTimeoutRef.current = setTimeout(() => {
                 if (typeof window !== 'undefined') {
                     const action = isCurrentlyFavorite ? 'removed from' : 'added to';
@@ -65,7 +60,7 @@ const useFavoriteStore = (): FavoritesHook => {
                     });
                     window.dispatchEvent(event);
                 }
-            }, 100); // 100ms debounce
+            }, 100);
 
             return newFavorites;
         });

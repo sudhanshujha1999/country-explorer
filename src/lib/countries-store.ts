@@ -3,11 +3,8 @@ import { persist } from 'zustand/middleware';
 import { Country } from '@/types';
 
 interface CountriesState {
-    // All countries for the main list (homepage)
     allCountries: Country[];
     allCountriesLoaded: boolean;
-
-    // Actions
     setAllCountries: (countries: Country[]) => void;
     getCountryFromList: (countryCode: string) => Country | undefined;
     clearCache: () => void;
@@ -35,7 +32,6 @@ const useCountriesStore = create<CountriesState>()(
         }),
         {
             name: 'countries-list-cache',
-            // Only persist the countries list data
             partialize: (state) => ({
                 allCountries: state.allCountries,
                 allCountriesLoaded: state.allCountriesLoaded

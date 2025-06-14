@@ -4,28 +4,24 @@ import { SnackbarProvider } from 'notistack';
 import { useEffect, useRef } from 'react';
 import { useSnackbar } from 'notistack';
 
-// Component to listen for custom notification events
 function NotificationListener() {
   const { enqueueSnackbar } = useSnackbar();
   const lastNotificationRef = useRef<{ message: string; timestamp: number } | null>(null);
 
   useEffect(() => {
     const handleNotification = (event: CustomEvent) => {
-      // Handle malformed events gracefully
       if (!event.detail || typeof event.detail !== 'object') {
         return;
       }
       
       const { message, variant } = event.detail;
       
-      // Ensure message and variant are provided
       if (!message || !variant) {
         return;
       }
       
       const now = Date.now();
       
-      // Prevent duplicate notifications within 500ms
       if (lastNotificationRef.current && 
           lastNotificationRef.current.message === message && 
           now - lastNotificationRef.current.timestamp < 500) {

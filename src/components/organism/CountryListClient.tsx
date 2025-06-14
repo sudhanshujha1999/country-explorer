@@ -16,15 +16,12 @@ export default function CountryListClient({ countries }: CountryListClientProps)
   const [selectedRegion, setSelectedRegion] = useState('');
   const { enqueueSnackbar } = useSnackbar();
 
-  // Store countries in cache for client-side features
   const { setAllCountries } = useCountriesStore();
   
-  // Set countries in store on component mount (client-side hydration)
   useEffect(() => {
     if (countries && countries.length > 0) {
       setAllCountries(countries);
     } else if (countries.length === 0) {
-      // Show error notification if no countries were loaded
       enqueueSnackbar(
         'Failed to load countries. Please refresh the page to try again.',
         { 
@@ -57,7 +54,6 @@ export default function CountryListClient({ countries }: CountryListClientProps)
     );
   };
 
-  // Show error state if no countries loaded
   if (countries.length === 0) {
     return (
       <div className="text-center py-12 px-4">

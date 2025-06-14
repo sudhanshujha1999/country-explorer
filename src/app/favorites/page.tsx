@@ -33,7 +33,6 @@ export default function FavoritesPage() {
         
         const data = await response.json();
         
-        // Handle both single country (object) and multiple countries (array) responses
         const countries = Array.isArray(data) ? data : [data];
         setFavoriteCountries(countries);
       } catch (error) {
@@ -65,21 +64,17 @@ export default function FavoritesPage() {
             <div className="h-4 sm:h-5 bg-gray-200 dark:bg-gray-700 rounded w-72 px-4 sm:px-0 animate-pulse"></div>
           </div>
 
-          {/* Country List skeleton */}
           <div className="px-4 sm:px-0">
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-              {/* Header skeleton - only show on desktop */}
               <div className="hidden sm:grid grid-cols-6 gap-4 p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
                 {['Flag', 'Name', 'Population', 'Region', 'Capital', 'Favorite'].map((_, i) => (
                   <div key={i} className={`h-4 bg-gray-200 dark:bg-gray-600 rounded animate-pulse ${i >= 3 ? 'hidden md:block' : ''} ${i >= 4 ? 'hidden lg:block' : ''}`}></div>
                 ))}
               </div>
 
-              {/* Country rows skeleton */}
               <div className="divide-y divide-gray-200 dark:divide-gray-700">
                 {[...Array(6)].map((_, i) => (
                   <div key={i} className="grid grid-cols-1 sm:grid-cols-6 gap-4 p-4">
-                    {/* Mobile layout skeleton */}
                     <div className="sm:hidden">
                       <div className="flex items-start gap-4">
                         <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse flex-shrink-0"></div>
@@ -106,7 +101,6 @@ export default function FavoritesPage() {
                       </div>
                     </div>
 
-                    {/* Desktop layout skeleton */}
                     <div className="hidden sm:contents">
                       <div className="flex justify-center">
                         <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>

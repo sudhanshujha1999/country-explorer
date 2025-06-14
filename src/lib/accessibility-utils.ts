@@ -1,8 +1,3 @@
-// Accessibility utility functions
-
-/**
- * Announces text to screen readers using a live region
- */
 export function announceToScreenReader(message: string, priority: 'polite' | 'assertive' = 'polite') {
     const announcement = document.createElement('div');
     announcement.setAttribute('aria-live', priority);
@@ -12,30 +7,21 @@ export function announceToScreenReader(message: string, priority: 'polite' | 'as
 
     document.body.appendChild(announcement);
 
-    // Remove after announcement
     setTimeout(() => {
         document.body.removeChild(announcement);
     }, 1000);
 }
 
-/**
- * Manages focus for better keyboard navigation
- */
 export function manageFocus(element: HTMLElement | null) {
     if (!element) return;
 
     element.focus();
-
-    // Ensure the element is scrolled into view
     element.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
     });
 }
 
-/**
- * Traps focus within a container (useful for modals)
- */
 export function trapFocus(container: HTMLElement) {
     const focusableElements = container.querySelectorAll(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -61,33 +47,21 @@ export function trapFocus(container: HTMLElement) {
     };
 
     container.addEventListener('keydown', handleTabKey);
-
-    // Focus first element
     firstElement?.focus();
 
-    // Return cleanup function
     return () => {
         container.removeEventListener('keydown', handleTabKey);
     };
 }
 
-/**
- * Checks if user prefers reduced motion
- */
 export function prefersReducedMotion(): boolean {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-/**
- * Checks if user prefers high contrast
- */
 export function prefersHighContrast(): boolean {
     return window.matchMedia('(prefers-contrast: high)').matches;
 }
 
-/**
- * Gets appropriate ARIA label for country information
- */
 export function getCountryAriaLabel(country: {
     name: { common: string };
     population: number;
@@ -98,19 +72,10 @@ export function getCountryAriaLabel(country: {
     return `${country.name.common}, population ${country.population.toLocaleString()}, region ${country.region}, capital ${capital}`;
 }
 
-/**
- * Validates color contrast ratio (simplified check)
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function hasGoodContrast(_foreground: string, _background: string): boolean {
-    // This is a simplified check - in production, you'd use a proper color contrast library
-    // For now, we'll assume our CSS variables provide good contrast
+export function hasGoodContrast(): boolean {
     return true;
 }
 
-/**
- * Keyboard navigation helper
- */
 export function handleArrowNavigation(
     event: KeyboardEvent,
     items: HTMLElement[],

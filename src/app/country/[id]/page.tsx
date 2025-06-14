@@ -3,15 +3,13 @@ import LoadingSkeleton from './loading';
 import CountryDetailClient from './CountryDetailClient';
 import { CountryDetail } from '@/types';
 
-// Helper function to fetch country data with border country names in one call
 async function getCountryDataWithBorders(countryCode: string): Promise<{
   countryData: CountryDetail | null;
   borderCountries: { [key: string]: string };
 }> {
   try {
-    // Fetch the main country data
     const response = await fetch(`https://restcountries.com/v3.1/alpha/${countryCode}`, {
-      next: { revalidate: 604800 } // Revalidate weekly (7 days)
+      next: { revalidate: 604800 }
     });
     
     if (!response.ok) {
@@ -21,14 +19,13 @@ async function getCountryDataWithBorders(countryCode: string): Promise<{
     const data = await response.json();
     const countryData = data[0];
     
-    // If country has borders, fetch border country names in the same request cycle
     let borderCountries: { [key: string]: string } = {};
     
     if (countryData.borders && countryData.borders.length > 0) {
       try {
         const borderCodes = countryData.borders.join(',');
         const borderResponse = await fetch(`https://restcountries.com/v3.1/alpha?codes=${borderCodes}&fields=cca2,name`, {
-          next: { revalidate: 604800 } // Revalidate weekly
+          next: { revalidate: 604800 }
         });
         
         if (borderResponse.ok) {
@@ -39,7 +36,6 @@ async function getCountryDataWithBorders(countryCode: string): Promise<{
           });
           borderCountries = borderNamesMap;
         } else {
-          // Fallback to showing country codes
           const fallbackMap: { [key: string]: string } = {};
           countryData.borders.forEach((code: string) => {
             fallbackMap[code] = code;
@@ -48,7 +44,6 @@ async function getCountryDataWithBorders(countryCode: string): Promise<{
         }
       } catch (borderError) {
         console.error('Error fetching border country names:', borderError);
-        // Fallback to showing country codes
         const fallbackMap: { [key: string]: string } = {};
         countryData.borders.forEach((code: string) => {
           fallbackMap[code] = code;
@@ -64,11 +59,7 @@ async function getCountryDataWithBorders(countryCode: string): Promise<{
   }
 }
 
-// No pre-generation - let pages be generated on-demand
-// This will create pages dynamically when visited and cache them with ISR
 export async function generateStaticParams() {
-  // Return empty array - no pre-generation
-  // Pages will be generated on-demand when users visit them
   return [];
 }
 
@@ -79,7 +70,6 @@ interface CountryDetailPageProps {
 export default async function CountryDetailPage({ params }: CountryDetailPageProps) {
   const { id } = await params;
   
-  // Fetch country data and border countries in one function call
   const { countryData, borderCountries } = await getCountryDataWithBorders(id);
   
   if (!countryData) {
@@ -107,5 +97,4 @@ export default async function CountryDetailPage({ params }: CountryDetailPagePro
   );
 }
 
-// Enable ISR for all countries - pages generated on-demand and cached
 export const dynamicParams = true; 

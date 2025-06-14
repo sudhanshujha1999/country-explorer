@@ -68,7 +68,6 @@ export default function LoginPage() {
           </p>
         </header>
         
-        {/* Error announcement for screen readers */}
         {hasErrors && (
           <div 
             role="alert" 
