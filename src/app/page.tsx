@@ -1,48 +1,49 @@
-import { Metadata } from 'next';
-import CountryListClient from '@/components/organism/CountryListClient';
+import { Suspense } from 'react';
 import { Country } from '@/types';
+import CountryListClient from '@/components/organism/CountryListClient';
 
-export const metadata: Metadata = {
-  title: 'Explore Countries - GlobeTrekker',
-  description: 'Discover and explore countries from around the world. Search by name, filter by region, and learn about populations, capitals, currencies, and more.',
-};
-
+// Server-side data fetching
 async function getCountries(): Promise<Country[]> {
   try {
     const response = await fetch('https://restcountries.com/v3.1/all?fields=name,population,region,capital,flags,cca2', {
-      next: { revalidate: 86400 } // 24 hours
+      next: { revalidate: 3600 } // Revalidate every hour
     });
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    const countries = await response.json();
-    return countries.sort((a: Country, b: Country) => a.name.common.localeCompare(b.name.common));
+    const data = await response.json();
+    
+    if (!Array.isArray(data)) {
+      throw new Error('Invalid data format received from API');
+    }
+    
+    return data;
   } catch (error) {
     console.error('Error fetching countries:', error);
+    // Return empty array on error - the client component can handle error display
     return [];
   }
 }
 
-export default async function Home() {
+export default async function HomePage() {
   const countries = await getCountries();
 
   return (
-    <main className="container mx-auto py-8">
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold text-theme mb-4">
+    <main className="container mx-auto py-6 sm:py-8" id="main-content">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-theme mb-2 px-4 sm:px-0">
           Explore Countries
         </h1>
-        <p className="text-lg text-muted max-w-2xl">
-          Discover detailed information about {countries.length} countries worldwide. 
-          Search by name, filter by region, and explore populations, capitals, currencies, and more.
+        <p className="text-muted text-sm sm:text-base px-4 sm:px-0">
+          Discover detailed information about countries around the world
         </p>
-      </header>
-      
-      <section aria-label="Country search and list">
+      </div>
+
+      <Suspense fallback={<div>Loading countries...</div>}>
         <CountryListClient countries={countries} />
-      </section>
+      </Suspense>
     </main>
   );
 }

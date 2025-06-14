@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { showSuccess, showInfo } from '@/lib/api-utils';
 
 interface User {
     username: string;
@@ -33,7 +32,18 @@ const useAuthStore = create<AuthState>()(
                 if (username === MOCK_CREDENTIALS.username && password === MOCK_CREDENTIALS.password) {
                     const user = { username, email: 'testuser@example.com' };
                     set({ user, isAuthenticated: true });
-                    showSuccess('Successfully logged in!');
+
+                    // Show success notification using notistack
+                    if (typeof window !== 'undefined') {
+                        const event = new CustomEvent('show-notification', {
+                            detail: {
+                                message: 'Successfully logged in!',
+                                variant: 'success'
+                            }
+                        });
+                        window.dispatchEvent(event);
+                    }
+
                     return { success: true };
                 } else {
                     return { success: false, error: 'Invalid username or password' };
@@ -43,7 +53,17 @@ const useAuthStore = create<AuthState>()(
             logout: () => {
                 const currentUser = get().user;
                 set({ user: null, isAuthenticated: false });
-                showInfo(`Goodbye ${currentUser?.username || 'User'}! You have been logged out.`);
+
+                // Show info notification using notistack
+                if (typeof window !== 'undefined') {
+                    const event = new CustomEvent('show-notification', {
+                        detail: {
+                            message: `Goodbye ${currentUser?.username || 'User'}! You have been logged out.`,
+                            variant: 'info'
+                        }
+                    });
+                    window.dispatchEvent(event);
+                }
             },
         }),
         {

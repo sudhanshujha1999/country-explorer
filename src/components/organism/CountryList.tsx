@@ -18,7 +18,7 @@ const CountryList: React.FC<CountryListProps> = ({ countries }) => {
 
   if (countries.length === 0) {
     return (
-      <div className="text-center py-12" role="status" aria-live="polite">
+      <div className="text-center py-12 px-4" role="status" aria-live="polite">
         <p className="text-muted text-lg">No countries found matching your criteria.</p>
       </div>
     );
@@ -28,93 +28,158 @@ const CountryList: React.FC<CountryListProps> = ({ countries }) => {
     const isFavorite = favorites.includes(country.cca2);
     
     const content = (
-      <div className="grid grid-cols-6 gap-4 p-4 hover:bg-accent/10 transition-colors items-center focus-within:bg-accent/10">
-        {/* Flag */}
-        <div className="flex justify-center">
-          <div className="w-10 h-10 rounded-full overflow-hidden border border-theme">
-            <Image
-              src={country.flags.svg}
-              alt={`Flag of ${country.name.common}`}
-              width={40}
-              height={40}
-              className="w-full h-full object-cover"
-            />
+      <div className="grid grid-cols-1 sm:grid-cols-6 gap-4 p-4 hover:bg-accent/10 transition-colors focus-within:bg-accent/10">
+        {/* Mobile Layout */}
+        <div className="sm:hidden">
+          <div className="flex items-start gap-4">
+            {/* Flag */}
+            <div className="flex-shrink-0">
+              <div className="w-12 h-12 rounded-full overflow-hidden border border-theme">
+                <Image
+                  src={country.flags.svg}
+                  alt={`Flag of ${country.name.common}`}
+                  width={48}
+                  height={48}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+            
+            {/* Country Info */}
+            <div className="flex-1 min-w-0">
+              <h3 className="text-theme font-semibold text-lg mb-1 truncate" title={country.name.common}>
+                {country.name.common}
+              </h3>
+              <div className="space-y-1 text-sm text-muted">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">Population:</span>
+                  <span aria-label={`Population: ${country.population.toLocaleString()}`}>
+                    {country.population.toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">Region:</span>
+                  <span aria-label={`Region: ${country.region}`}>
+                    {country.region}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">Capital:</span>
+                  <span aria-label={`Capital: ${country.capital?.[0] || 'N/A'}`}>
+                    {country.capital?.[0] || 'N/A'}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Favorite Button */}
+            <div className="flex-shrink-0">
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleFavorite(country.cca2, country.name.common);
+                }}
+                className="p-2 rounded-full hover:bg-accent/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                aria-label={isFavorite 
+                  ? `Remove ${country.name.common} from favorites` 
+                  : `Add ${country.name.common} to favorites`
+                }
+                title={isFavorite 
+                  ? `Remove ${country.name.common} from favorites` 
+                  : `Add ${country.name.common} to favorites`
+                }
+              >
+                {isFavorite ? (
+                  <HeartSolid className="w-6 h-6 text-red-500" aria-hidden="true" />
+                ) : (
+                  <HeartOutline className="w-6 h-6 text-muted" aria-hidden="true" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Name */}
-        <div className="text-theme">
-          <div className="truncate" title={country.name.common}>
-            {country.name.common}
+        {/* Desktop Layout - Hidden on mobile */}
+        <div className="hidden sm:contents">
+          {/* Flag */}
+          <div className="flex justify-center">
+            <div className="w-10 h-10 rounded-full overflow-hidden border border-theme">
+              <Image
+                src={country.flags.svg}
+                alt={`Flag of ${country.name.common}`}
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
-          {/* Mobile: Show additional info below name */}
-          <div className="sm:hidden text-sm text-muted mt-1">
-            <div aria-label={`Population: ${country.population.toLocaleString()}`}>
+
+          {/* Name */}
+          <div className="text-theme">
+            <div className="truncate" title={country.name.common}>
+              {country.name.common}
+            </div>
+          </div>
+
+          {/* Population */}
+          <div className="text-theme">
+            <div 
+              className="truncate" 
+              title={`Population: ${country.population.toLocaleString()}`}
+              aria-label={`Population: ${country.population.toLocaleString()}`}
+            >
               {country.population.toLocaleString()}
             </div>
-            <div aria-label={`Region: ${country.region}, Capital: ${country.capital?.[0] || 'N/A'}`}>
-              {country.region} • {country.capital?.[0] || 'N/A'}
+          </div>
+
+          {/* Region - Hidden on small tablets */}
+          <div className="hidden md:block text-theme">
+            <div 
+              className="truncate" 
+              title={`Region: ${country.region}`}
+              aria-label={`Region: ${country.region}`}
+            >
+              {country.region}
             </div>
           </div>
-        </div>
 
-        {/* Population - Hidden on mobile */}
-        <div className="hidden sm:block text-theme">
-          <div 
-            className="truncate" 
-            title={`Population: ${country.population.toLocaleString()}`}
-            aria-label={`Population: ${country.population.toLocaleString()}`}
-          >
-            {country.population.toLocaleString()}
+          {/* Capital - Hidden on tablets */}
+          <div className="hidden lg:block text-theme">
+            <div 
+              className="truncate" 
+              title={`Capital: ${country.capital?.[0] || 'N/A'}`}
+              aria-label={`Capital: ${country.capital?.[0] || 'N/A'}`}
+            >
+              {country.capital?.[0] || 'N/A'}
+            </div>
           </div>
-        </div>
 
-        {/* Region - Hidden on mobile and small tablets */}
-        <div className="hidden md:block text-theme">
-          <div 
-            className="truncate" 
-            title={`Region: ${country.region}`}
-            aria-label={`Region: ${country.region}`}
-          >
-            {country.region}
+          {/* Favorite */}
+          <div className="flex justify-center">
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleFavorite(country.cca2, country.name.common);
+              }}
+              className="p-1 rounded-full hover:bg-accent/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+              aria-label={isFavorite 
+                ? `Remove ${country.name.common} from favorites` 
+                : `Add ${country.name.common} to favorites`
+              }
+              title={isFavorite 
+                ? `Remove ${country.name.common} from favorites` 
+                : `Add ${country.name.common} to favorites`
+              }
+            >
+              {isFavorite ? (
+                <HeartSolid className="w-6 h-6 text-red-500" aria-hidden="true" />
+              ) : (
+                <HeartOutline className="w-6 h-6 text-muted" aria-hidden="true" />
+              )}
+            </button>
           </div>
-        </div>
-
-        {/* Capital - Hidden on mobile and tablets */}
-        <div className="hidden lg:block text-theme">
-          <div 
-            className="truncate" 
-            title={`Capital: ${country.capital?.[0] || 'N/A'}`}
-            aria-label={`Capital: ${country.capital?.[0] || 'N/A'}`}
-          >
-            {country.capital?.[0] || 'N/A'}
-          </div>
-        </div>
-
-        {/* Favorite */}
-        <div className="flex justify-center">
-          <button 
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              toggleFavorite(country.cca2, country.name.common);
-            }}
-            className="p-1 rounded-full hover:bg-accent/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-            aria-label={isFavorite 
-              ? `Remove ${country.name.common} from favorites` 
-              : `Add ${country.name.common} to favorites`
-            }
-            title={isFavorite 
-              ? `Remove ${country.name.common} from favorites` 
-              : `Add ${country.name.common} to favorites`
-            }
-          >
-            {isFavorite ? (
-              <HeartSolid className="w-6 h-6 text-red-500" aria-hidden="true" />
-            ) : (
-              <HeartOutline className="w-6 h-6 text-muted" aria-hidden="true" />
-            )}
-          </button>
         </div>
       </div>
     );
@@ -145,17 +210,17 @@ const CountryList: React.FC<CountryListProps> = ({ countries }) => {
   };
 
   return (
-    <section aria-label="Countries list">
+    <section aria-label="Countries list" className="px-4 sm:px-0">
       <div className="bg-theme border border-theme rounded-lg overflow-hidden" role="table" aria-label="Countries information table">
-        {/* Header */}
+        {/* Header - Only show on desktop */}
         <div 
-          className="grid grid-cols-6 gap-4 p-4 border-b border-theme font-medium text-theme bg-accent/5"
+          className="hidden sm:grid grid-cols-6 gap-4 p-4 border-b border-theme font-medium text-theme bg-accent/5"
           role="row"
           aria-label="Table headers"
         >
           <div className="text-center" role="columnheader" aria-label="Country flag">Flag</div>
           <div role="columnheader" aria-label="Country name">Name</div>
-          <div className="hidden sm:block" role="columnheader" aria-label="Population">Population</div>
+          <div role="columnheader" aria-label="Population">Population</div>
           <div className="hidden md:block" role="columnheader" aria-label="Region">Region</div>
           <div className="hidden lg:block" role="columnheader" aria-label="Capital city">Capital</div>
           <div className="text-center" role="columnheader" aria-label="Add to favorites">Favorite</div>

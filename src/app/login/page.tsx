@@ -41,11 +41,11 @@ export default function LoginPage() {
     setErrors({});
     
     try {
-      const success = await login(username, password);
-      if (success) {
+      const result = await login(username, password);
+      if (result.success) {
         router.push('/');
       } else {
-        setErrors({ general: 'Invalid username or password. Please try again.' });
+        setErrors({ general: result.error || 'Invalid username or password. Please try again.' });
       }
     } catch {
       setErrors({ general: 'An error occurred during login. Please try again.' });
@@ -57,13 +57,13 @@ export default function LoginPage() {
   const hasErrors = Object.keys(errors).length > 0;
 
   return (
-    <main className="h-[calc(100vh-80px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <header>
-          <h1 className="mt-6 text-center text-3xl font-bold text-theme">
+    <main className="min-h-[calc(100vh-80px)] flex items-center justify-center py-8 px-4">
+      <div className="max-w-md w-full space-y-6">
+        <header className="text-center">
+          <h1 className="text-2xl sm:text-3xl font-bold text-theme mb-2">
             Log in to your account
           </h1>
-          <p className="mt-2 text-center text-sm text-muted">
+          <p className="text-sm sm:text-base text-muted">
             Sign in to access your favorite countries and personalized features
           </p>
         </header>
@@ -79,14 +79,14 @@ export default function LoginPage() {
           </div>
         )}
         
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
+        <form className="space-y-6" onSubmit={handleSubmit} noValidate>
           <fieldset disabled={isLoading} className="space-y-4">
             <legend className="sr-only">Login credentials</legend>
             
             {errors.general && (
               <div 
                 role="alert"
-                className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md"
+                className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
               >
                 <p className="text-sm text-red-600 dark:text-red-400">
                   {errors.general}
@@ -110,7 +110,7 @@ export default function LoginPage() {
                     setErrors(prev => ({ ...prev, username: undefined }));
                   }
                 }}
-                className={`w-full border rounded-md py-3 px-4 focus:outline-none focus:ring-2 bg-theme text-theme ${
+                className={`w-full border rounded-lg py-3 px-4 text-base focus:outline-none focus:ring-2 bg-theme text-theme ${
                   errors.username 
                     ? 'border-red-500 focus:ring-red-500 focus:border-red-500' 
                     : 'border-theme focus:ring-blue-500 focus:border-blue-500'
@@ -121,11 +121,11 @@ export default function LoginPage() {
                 autoComplete="username"
               />
               {errors.username && (
-                <p id="username-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">
+                <p id="username-error" role="alert" className="mt-2 text-sm text-red-600 dark:text-red-400">
                   {errors.username}
                 </p>
               )}
-              <p id="username-help" className="mt-1 text-xs text-muted">
+              <p id="username-help" className="mt-2 text-xs text-muted">
                 Use &quot;testuser&quot; for demo access
               </p>
             </div>
@@ -146,7 +146,7 @@ export default function LoginPage() {
                     setErrors(prev => ({ ...prev, password: undefined }));
                   }
                 }}
-                className={`w-full border rounded-md py-3 px-4 focus:outline-none focus:ring-2 bg-theme text-theme ${
+                className={`w-full border rounded-lg py-3 px-4 text-base focus:outline-none focus:ring-2 bg-theme text-theme ${
                   errors.password 
                     ? 'border-red-500 focus:ring-red-500 focus:border-red-500' 
                     : 'border-theme focus:ring-blue-500 focus:border-blue-500'
@@ -157,11 +157,11 @@ export default function LoginPage() {
                 autoComplete="current-password"
               />
               {errors.password && (
-                <p id="password-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">
+                <p id="password-error" role="alert" className="mt-2 text-sm text-red-600 dark:text-red-400">
                   {errors.password}
                 </p>
               )}
-              <p id="password-help" className="mt-1 text-xs text-muted">
+              <p id="password-help" className="mt-2 text-xs text-muted">
                 Use &quot;password123&quot; for demo access
               </p>
             </div>
@@ -171,7 +171,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-h-[48px]"
               aria-describedby="submit-help"
             >
               {isLoading ? (
@@ -188,11 +188,17 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="text-center text-sm text-muted bg-accent/5 p-4 rounded-md">
-            <h2 className="font-medium text-theme mb-2">Demo Credentials</h2>
-            <div className="space-y-1">
-              <p><span className="font-medium">Username:</span> testuser</p>
-              <p><span className="font-medium">Password:</span> password123</p>
+          <div className="text-center text-sm text-muted bg-accent/5 p-4 rounded-lg">
+            <h2 className="font-medium text-theme mb-3">Demo Credentials</h2>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">Username:</span>
+                <span className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">testuser</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-medium">Password:</span>
+                <span className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">password123</span>
+              </div>
             </div>
           </div>
         </form>

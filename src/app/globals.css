@@ -75,7 +75,101 @@ body {
     table td {
       font-size: 15px;
     }
-    
+
+/* Mobile-first optimizations */
+@media (max-width: 640px) {
+
+  /* Improve touch targets on mobile */
+  input,
+  select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Better spacing for mobile */
+  /* .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  } */
+
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Improve text readability on mobile */
+  p,
+  li,
+  span {
+    line-height: 1.6;
+  }
+
+  /* Better mobile form styling */
+  input[type="text"],
+  input[type="password"],
+  select {
+    font-size: 16px;
+    /* Prevents zoom on iOS */
+    padding: 12px 16px;
+    border-radius: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* Fix search input specifically */
+  input[type="text"]#country-search {
+    padding-left: 48px;
+    /* Account for search icon */
+    padding-right: 16px;
+  }
+
+  /* Fix select dropdown on mobile */
+  select {
+    background-image: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+}
+
+/* Tablet optimizations */
+/* @media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+} */
+
+/* Improve focus visibility on all devices */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Better mobile menu animations */
+@media (max-width: 768px) {
+  .mobile-menu-enter {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  .mobile-menu-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+  }
+
+  .mobile-menu-exit {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .mobile-menu-exit-active {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 150ms ease-in, transform 150ms ease-in;
+  }
+}
     /* Notistack custom styling */
     .SnackbarContainer-root {
       font-family: var(--font-mono) !important;
@@ -212,7 +306,7 @@ body {
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Info notification - cyan theme */
+/* Info notification - blue theme */
 .SnackbarItem-variantInfo {
   background-color: #06b6d4 !important;
   color: white !important;
@@ -222,7 +316,7 @@ body {
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Warning notification - amber theme */
+/* Warning notification - yellow theme */
 .SnackbarItem-variantWarning {
   background-color: #f59e0b !important;
   color: white !important;
