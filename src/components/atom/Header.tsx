@@ -17,31 +17,37 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="bg-theme shadow-theme px-4 py-3">
+    <header className="bg-theme shadow-theme px-4 py-3" role="banner">
       <div className="container mx-auto flex items-center justify-between">
         {/* Left side: Logo and Navigation */}
         <div className="flex items-center space-x-8">
           {/* Logo or Title */}
-          <Link href="/" className="text-xl font-semibold text-theme">
+          <Link 
+            href="/" 
+            className="text-xl font-semibold text-theme"
+            aria-label="GlobeTrekker - Go to homepage"
+          >
             GlobeTrekker
           </Link>
 
           {/* Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center space-x-6" role="navigation" aria-label="Main navigation">
             <Link 
               href="/" 
-              className="relative text-theme hover:text-accent transition-all duration-200 px-3 py-2 rounded-md hover:bg-accent/10 font-medium group"
+              className="relative text-theme hover:text-accent transition-all duration-200 px-3 py-2 rounded-md hover:bg-accent/10 font-medium group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              aria-label="Explore countries"
             >
               Explore
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-200 group-hover:w-full"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-200 group-hover:w-full" aria-hidden="true"></span>
             </Link>
             {isAuthenticated && (
               <Link 
                 href="/favorites" 
-                className="relative text-theme hover:text-accent transition-all duration-200 px-3 py-2 rounded-md hover:bg-accent/10 font-medium group"
+                className="relative text-theme hover:text-accent transition-all duration-200 px-3 py-2 rounded-md hover:bg-accent/10 font-medium group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                aria-label="View your favorite countries"
               >
                 Favorites
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-200 group-hover:w-full"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-200 group-hover:w-full" aria-hidden="true"></span>
               </Link>
             )}
           </nav>
@@ -51,12 +57,12 @@ const Header = () => {
         <div className="flex items-center gap-3">
           {mounted && (
             <button 
-              className="flex cursor-pointer items-center gap-2 px-3 py-2 border border-theme rounded-md hover:bg-accent/10 hover:border-accent transition-all duration-200 text-sm font-medium text-theme hover:text-accent" 
+              className="flex cursor-pointer items-center gap-2 px-3 py-2 border border-theme rounded-md hover:bg-accent/10 hover:border-accent transition-all duration-200 text-sm font-medium text-theme hover:text-accent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" 
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-              aria-label="Toggle theme"
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             >
-              <span className="text-md">{theme === 'dark' ? '🌞' : '🌙'}</span>
+              <span className="text-md" aria-hidden="true">{theme === 'dark' ? '🌞' : '🌙'}</span>
               <span className="hidden sm:inline">
                 {theme === 'dark' ? 'Light' : 'Dark'}
               </span>
@@ -65,20 +71,24 @@ const Header = () => {
           
           {isAuthenticated ? (
             <div className="flex items-center gap-2">
-              <span className="hidden sm:block text-sm text-muted">
+              <span className="hidden sm:block text-sm text-muted" aria-label={`Logged in as ${user?.username}`}>
                 Welcome, {user?.username}
               </span>
               <button 
                 onClick={logout}
-                className="text-sm cursor-pointer text-theme hover:text-accent transition-all duration-200 px-3 py-2 rounded-md hover:bg-accent/10 font-medium border border-transparent hover:border-accent"
+                className="text-sm cursor-pointer text-theme hover:text-accent transition-all duration-200 px-3 py-2 rounded-md hover:bg-accent/10 font-medium border border-transparent hover:border-accent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                aria-label="Sign out of your account"
               >
                 Sign out
               </button>
             </div>
           ) : (
-            <Link href="/login">
-              <button className="flex cursor-pointer items-center gap-2 px-3 py-2 border border-theme rounded-md hover:bg-accent/10 hover:border-accent transition-all duration-200 text-sm font-medium text-theme hover:text-accent">
-                <UserCircleIcon className="w-5 h-5" />
+            <Link 
+              href="/login"
+              aria-label="Sign in to your account"
+            >
+              <button className="flex cursor-pointer items-center gap-2 px-3 py-2 border border-theme rounded-md hover:bg-accent/10 hover:border-accent transition-all duration-200 text-sm font-medium text-theme hover:text-accent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                <UserCircleIcon className="w-5 h-5" aria-hidden="true" />
                 <span className="hidden sm:inline">Sign in</span>
               </button>
             </Link>

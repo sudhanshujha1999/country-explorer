@@ -1,54 +1,102 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useAuthStore from '@/lib/auth-store';
-import { enqueueSnackbar } from 'notistack';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<{username?: string; password?: string; general?: string}>({});
   
-  const { login, isAuthenticated } = useAuthStore();
+  const { login } = useAuthStore();
   const router = useRouter();
 
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.push('/');
+  const validateForm = () => {
+    const newErrors: {username?: string; password?: string} = {};
+    
+    if (!username.trim()) {
+      newErrors.username = 'Username is required';
     }
-  }, [isAuthenticated, router]);
+    
+    if (!password.trim()) {
+      newErrors.password = 'Password is required';
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    const result = await login(username, password);
     
-    if (result.success) {
-      router.push('/');
-    } else {
-      enqueueSnackbar(result.error || 'Login failed', { variant: 'error' });
+    if (!validateForm()) {
+      return;
     }
     
-    setIsLoading(false);
+    setIsLoading(true);
+    setErrors({});
+    
+    try {
+      const success = await login(username, password);
+      if (success) {
+        router.push('/');
+      } else {
+        setErrors({ general: 'Invalid username or password. Please try again.' });
+      }
+    } catch {
+      setErrors({ general: 'An error occurred during login. Please try again.' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  const hasErrors = Object.keys(errors).length > 0;
+
   return (
-    <div className="h-[calc(100vh-80px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <main className="h-[calc(100vh-80px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-bold text-theme">
+        <header>
+          <h1 className="mt-6 text-center text-3xl font-bold text-theme">
             Log in to your account
-          </h2>
-        </div>
+          </h1>
+          <p className="mt-2 text-center text-sm text-muted">
+            Sign in to access your favorite countries and personalized features
+          </p>
+        </header>
         
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
+        {/* Error announcement for screen readers */}
+        {hasErrors && (
+          <div 
+            role="alert" 
+            aria-live="assertive"
+            className="sr-only"
+          >
+            There are errors in the form. Please review and correct them.
+          </div>
+        )}
+        
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
+          <fieldset disabled={isLoading} className="space-y-4">
+            <legend className="sr-only">Login credentials</legend>
+            
+            {errors.general && (
+              <div 
+                role="alert"
+                className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md"
+              >
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {errors.general}
+                </p>
+              </div>
+            )}
+            
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-theme mb-2">
-                Username
+                Username *
               </label>
               <input
                 id="username"
@@ -56,15 +104,35 @@ export default function LoginPage() {
                 type="text"
                 required
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full border border-theme rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-theme text-theme"
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                  if (errors.username) {
+                    setErrors(prev => ({ ...prev, username: undefined }));
+                  }
+                }}
+                className={`w-full border rounded-md py-3 px-4 focus:outline-none focus:ring-2 bg-theme text-theme ${
+                  errors.username 
+                    ? 'border-red-500 focus:ring-red-500 focus:border-red-500' 
+                    : 'border-theme focus:ring-blue-500 focus:border-blue-500'
+                }`}
                 placeholder="Enter your username"
+                aria-describedby={errors.username ? "username-error" : "username-help"}
+                aria-invalid={!!errors.username}
+                autoComplete="username"
               />
+              {errors.username && (
+                <p id="username-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {errors.username}
+                </p>
+              )}
+              <p id="username-help" className="mt-1 text-xs text-muted">
+                Use &quot;testuser&quot; for demo access
+              </p>
             </div>
             
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-theme mb-2">
-                Password
+                Password *
               </label>
               <input
                 id="password"
@@ -72,30 +140,63 @@ export default function LoginPage() {
                 type="password"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-theme rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-theme text-theme"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errors.password) {
+                    setErrors(prev => ({ ...prev, password: undefined }));
+                  }
+                }}
+                className={`w-full border rounded-md py-3 px-4 focus:outline-none focus:ring-2 bg-theme text-theme ${
+                  errors.password 
+                    ? 'border-red-500 focus:ring-red-500 focus:border-red-500' 
+                    : 'border-theme focus:ring-blue-500 focus:border-blue-500'
+                }`}
                 placeholder="Enter your password"
+                aria-describedby={errors.password ? "password-error" : "password-help"}
+                aria-invalid={!!errors.password}
+                autoComplete="current-password"
               />
+              {errors.password && (
+                <p id="password-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {errors.password}
+                </p>
+              )}
+              <p id="password-help" className="mt-1 text-xs text-muted">
+                Use &quot;password123&quot; for demo access
+              </p>
             </div>
-          </div>
+          </fieldset>
 
           <div>
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              aria-describedby="submit-help"
             >
-              {isLoading ? 'Signing in...' : 'Sign in'}
+              {isLoading ? (
+                <>
+                  <span className="sr-only">Signing in, please wait</span>
+                  <span aria-hidden="true">Signing in...</span>
+                </>
+              ) : (
+                'Sign in'
+              )}
             </button>
+            <p id="submit-help" className="sr-only">
+              Press Enter or click this button to sign in with your credentials
+            </p>
           </div>
 
-          <div className="text-center text-sm text-muted">
-            <p>Demo credentials:</p>
-            <p><strong>Username:</strong> testuser</p>
-            <p><strong>Password:</strong> password123</p>
+          <div className="text-center text-sm text-muted bg-accent/5 p-4 rounded-md">
+            <h2 className="font-medium text-theme mb-2">Demo Credentials</h2>
+            <div className="space-y-1">
+              <p><span className="font-medium">Username:</span> testuser</p>
+              <p><span className="font-medium">Password:</span> password123</p>
+            </div>
           </div>
         </form>
       </div>
-    </div>
+    </main>
   );
 } 
